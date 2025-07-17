@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>চেকআউট - চড়কি</title>
+    <style>
+      /* Common Styles from Index.html */
+      :root {
+        --primary-color: #f8d56b;
+        --secondary-color: #2c3e50;
+        --light-color: #f9f9f9;
+        --dark-color: #333;
+        --success-color: #4caf50;
+        --danger-color: #f44336;
+      }
+      * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+      body { background-color: #fff; color: var(--dark-color); line-height: 1.6; }
+      .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+      header { background-color: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 100; border-bottom: 1px solid #eee; }
+      .header-container { display: flex; justify-content: space-between; align-items: center; padding: 15px 0; }
+      .logo img { width: 100px; height: auto; margin-left: 40px; }
+      .nav-links a { text-decoration: none; color: var(--dark-color); font-weight: 500; transition: color 0.3s; font-size: 16px; margin-right: 40px; }
+      .nav-links a:hover { color: var(--primary-color); }
+      
+      /* Main Checkout Area */
+      .checkout-section {
+        padding: 40px 0;
+      }
+      #checkoutForm {
+          display: flex;
+          justify-content: center;
+          gap: 30px;
+          flex-wrap: wrap;
+      }
+
+      /* Left Column: Form Fields */
+      .form-details {
+          flex: 1.5;
+          max-width: 550px;
+          min-width: 300px;
+      }
+      .form-details h2, .order-summary h2 {
+          font-size: 22px;
+          color: var(--secondary-color);
+          margin-bottom: 25px;
+          border-bottom: 1px solid #eee;
+          padding-bottom: 10px;
+      }
+      .form-group {
+          margin-bottom: 20px;
+      }
+      .form-label {
+          display: block;
+          margin-bottom: 8px;
+          font-weight: 500;
+          color: #555;
+      }
+      .form-input, .form-textarea {
+          width: 100%;
+          padding: 12px;
+          border: 1px solid #ddd;
+          border-radius: 5px;
+          font-size: 16px;
+          transition: border-color 0.3s;
+      }
+      .form-input:focus, .form-textarea:focus {
+          border-color: var(--primary-color);
+          outline: none;
+      }
+      .form-textarea {
+          resize: vertical;
+          min-height: 100px;
+      }
+
+      /* Right Column: Order Summary */
+      .order-summary {
+          flex: 1;
+          max-width: 450px;
+          min-width: 300px;
+          background-color: var(--light-color);
+          padding: 25px;
+          border-radius: 10px;
+          box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+          border: 1px solid #eee;
+          align-self: flex-start;
+      }
+       /* UPDATED STYLE FOR SUMMARY ITEM */
+      .summary-item {
+          display: flex;
+          align-items: center;
+          gap: 15px;
+          margin-bottom: 15px;
+          font-size: 16px;
+          color: #555;
+      }
+      /* NEW STYLE FOR ITEM IMAGE */
+      .summary-item-image {
+          width: 60px;
+          height: 60px;
+          object-fit: cover;
+          border-radius: 8px;
+          border: 1px solid #eee;
+      }
+      .summary-item-details {
+          flex-grow: 1;
+      }
+      .summary-line {
+          display: flex;
+          justify-content: space-between;
+          margin-bottom: 12px;
+          font-size: 16px;
+          color: #555;
+      }
+      #summaryItems {
+          border-bottom: 1px solid #ddd;
+          padding-bottom: 15px;
+          margin-bottom: 15px;
+      }
+      .summary-line.total {
+          font-size: 20px;
+          font-weight: bold;
+          color: var(--secondary-color);
+          margin-top: 20px;
+          padding-top: 15px;
+          border-top: 1px solid #ddd;
+      }
+      .summary-line .price, .summary-item .price {
+          font-weight: 500;
+          white-space: nowrap;
+      }
+      .shipping-section {
+          margin-top: 20px;
+      }
+      .shipping-section h3 {
+        font-size: 16px;
+        font-weight: 500;
+        margin-bottom: 10px;
+      }
+      .shipping-option {
+          display: flex;
+          justify-content: space-between;
+          padding: 12px;
+          border: 1px solid #ddd;
+          border-radius: 5px;
+          margin-bottom: 10px;
+          cursor: pointer;
+          transition: all 0.2s ease-in-out;
+      }
+      .shipping-option.selected {
+          border-color: #f8d56b;
+          background-color: #fef8e7;
+      }
+      .shipping-option label {
+          cursor: pointer;
+      }
+      
+      /* Buttons */
+      .btn-place-order {
+          width: 100%;
+          background-color: var(--success-color);
+          color: white;
+          padding: 15px;
+          border: none;
+          border-radius: 5px;
+          cursor: pointer;
+          font-size: 18px;
+          font-weight: bold;
+          transition: background-color 0.3s, transform 0.2s;
+          margin-top: 20px;
+      }
+      .btn-place-order:hover:not(:disabled) {
+          background-color: #45a049;
+          transform: translateY(-2px);
+      }
+      .btn-place-order:disabled {
+          background-color: #cccccc;
+          color: #666666;
+          cursor: not-allowed;
+      }
+      
+      /* Confirmation Page */
+      .confirmation-page { display: none; text-align: center; padding: 100px 20px; }
+      .confirmation-page .icon { font-size: 80px; color: var(--success-color); margin-bottom: 30px; }
+      .confirmation-page h1 { font-size: 40px; color: var(--secondary-color); margin-bottom: 20px; }
+      .confirmation-page p { font-size: 18px; color: #666; margin-bottom: 40px; max-width: 600px; margin-left: auto; margin-right: auto; }
+      .btn-confirmation { display: inline-block; background-color: var(--primary-color); color: var(--secondary-color); padding: 12px 30px; border-radius: 5px; font-weight: bold; text-decoration: none; transition: all 0.3s; }
+
+      /* Footer */
+      footer { background-color: var(--dark-color); color: white; text-align: center; padding: 20px 0; margin-top: 50px; }
+      
+      /* Responsive adjustments */
+      @media (max-width: 768px) {
+          #checkoutForm { flex-direction: column; align-items: center; }
+          .form-details, .order-summary { max-width: 90%; width: 100%; }
+      }
+    </style>
+</head>
+<body>
+    <header>
+      <div class="container header-container">
+        <a href="index.html" class="logo"><img src="riyad_logo-01.png" alt="Chorki Logo" /></a>
+        <nav class="nav-links">
+          <a href="index.html" class="continue-shopping-link">Continue Shopping</a>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+        <section class="checkout-section" id="checkoutSection">
+            <div class="container">
+                <form id="checkoutForm">
+                    <div class="form-details">
+                        <h2>অর্ডার করতে ফর্মটি পূরণ করুন</h2>
+                        <div class="form-group">
+                            <label for="customerName" class="form-label">আপনার নাম *</label>
+                            <input type="text" id="customerName" class="form-input" required />
+                        </div>
+                        <div class="form-group">
+                            <label for="customerPhone" class="form-label">আপনার মোবাইল নাম্বারটি দিন *</label>
+                            <input type="tel" id="customerPhone" class="form-input" required />
+                        </div>
+                        <div class="form-group">
+                            <label for="customerAddress" class="form-label">আপনার ঠিকানা দিন *</label>
+                            <input type="text" id="customerAddress" class="form-input" required />
+                        </div>
+                        <div class="form-group">
+                            <label for="specialInstructions" class="form-label">বিশেষ নির্দেশনা (ঐচ্ছিক)</label>
+                            <textarea id="specialInstructions" class="form-textarea"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="order-summary">
+                        <h2>আপনার অর্ডার</h2>
+                        <div id="summaryItems"></div>
+                        <div id="summaryTotals"></div>
+                        <button type="submit" class="btn-place-order" id="placeOrderBtn" disabled>প্রয়োজনীয় ফিল্ডগুলি পূরণ করুন</button>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+        <section class="confirmation-page" id="confirmationPage">
+            <div class="container">
+                <div class="icon">✓</div>
+                <h1>অর্ডার নিশ্চিত!</h1>
+                <p>আপনার অর্ডার সফলভাবে গ্রহণ করা হয়েছে এবং খুব শীঘ্রই ডেলিভারি করা হবে। ধন্যবাদ।</p>
+                <a href="index.html" class="btn-confirmation">কেনাকাটা চালিয়ে যান</a>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>Chorki - Lighting Solutions for Every Space</p>
+        </div>
+    </footer>
+
+    <script type="module">
+        // Firebase SDK imports
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics.js";
+        import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+        // Your Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyA7kF4VrKR8-w34rQNcxzyp3HKPvpxJxnc",
+            authDomain: "chorki-cf140.firebaseapp.com",
+            projectId: "chorki-cf140",
+            storageBucket: "chorki-cf140.firebasestorage.app",
+            messagingSenderId: "696220681851",
+            appId: "1:696220681851:web:8165a71a385db381b3c4de",
+            measurementId: "G-YMCF34T1E4"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        getAnalytics(app);
+        const db = getFirestore(app);
+
+        // Define the saveOrderToFirestore function globally for this module
+        window.saveOrderToFirestore = async function(order) {
+            try {
+                const docRef = await addDoc(collection(db, "orders"), order);
+                console.log("✅ Order saved to Firestore with ID: ", docRef.id);
+                return true;
+            } catch (e) {
+                console.error("❌ Error saving order to Firestore: ", e);
+                alert("আপনার অর্ডার ডেটাবেসে সেভ করতে সমস্যা হয়েছে। বিস্তারিত জানতে কনসোল দেখুন এবং আবার চেষ্টা করুন।");
+                return false;
+            }
+        };
+
+        // Main Checkout Page Logic
+        document.addEventListener('DOMContentLoaded', () => {
+            const checkoutForm = document.getElementById('checkoutForm');
+            const summaryItemsContainer = document.getElementById('summaryItems');
+            const summaryTotalsContainer = document.getElementById('summaryTotals');
+            const placeOrderBtn = document.getElementById('placeOrderBtn');
+            const checkoutSection = document.getElementById('checkoutSection');
+            const confirmationPage = document.getElementById('confirmationPage');
+            const requiredInputs = document.querySelectorAll('#customerName, #customerPhone, #customerAddress');
+
+            let cart = JSON.parse(localStorage.getItem('cart')) || [];
+            const SHIPPING_COSTS = { inside: 70, outside: 130 };
+            let selectedShippingKey = 'inside';
+
+            // Format price with Bengali Taka sign
+            function formatPrice(price) {
+                return new Intl.NumberFormat('bn-BD').format(price) + '৳';
+            }
+            
+            function validateForm() {
+                const allFilled = Array.from(requiredInputs).every(input => input.value.trim() !== '');
+                if (allFilled) {
+                    placeOrderBtn.disabled = false;
+                    placeOrderBtn.textContent = 'Place Order';
+                } else {
+                    placeOrderBtn.disabled = true;
+                    placeOrderBtn.textContent = 'প্রয়োজনীয় ফিল্ডগুলি পূরণ করুন';
+                }
+            }
+
+            function renderSummary() {
+                summaryItemsContainer.innerHTML = '';
+                summaryTotalsContainer.innerHTML = '';
+                
+                if (cart.length === 0) {
+                    summaryItemsContainer.innerHTML = '<p>আপনার কার্ট খালি আছে।</p>';
+                    validateForm();
+                    return;
+                }
+
+                let subtotal = 0;
+                cart.forEach(item => {
+                    const itemTotal = item.price * item.quantity;
+                    subtotal += itemTotal;
+                    const itemDiv = document.createElement('div');
+                    itemDiv.className = 'summary-item';
+                    
+                    // UPDATED PART: Added img tag and new structure
+                    itemDiv.innerHTML = `
+                        <img src="${item.image}" alt="${item.name}" class="summary-item-image">
+                        <div class="summary-item-details">
+                            ${item.name} (x${item.quantity})
+                        </div>
+                        <span class="price">${formatPrice(itemTotal)}</span>
+                    `;
+                    summaryItemsContainer.appendChild(itemDiv);
+                });
+
+                const selectedShippingCost = SHIPPING_COSTS[selectedShippingKey];
+                const finalTotal = subtotal + selectedShippingCost;
+
+                summaryTotalsContainer.innerHTML = `
+                    <div class="summary-line">
+                        <span>Subtotal</span>
+                        <span class="price">${formatPrice(subtotal)}</span>
+                    </div>
+                    <div class="shipping-section">
+                        <h3>Shipping</h3>
+                        <div class="shipping-option ${selectedShippingKey === 'inside' ? 'selected' : ''}" data-shipping="inside">
+                            <label for="shipping-inside">
+                                <input type="radio" id="shipping-inside" name="shipping" value="inside" ${selectedShippingKey === 'inside' ? 'checked' : ''}>
+                                ঢাকার ভিতরে ডেলিভারি
+                            </label>
+                            <span class="price">${formatPrice(SHIPPING_COSTS.inside)}</span>
+                        </div>
+                        <div class="shipping-option ${selectedShippingKey === 'outside' ? 'selected' : ''}" data-shipping="outside">
+                            <label for="shipping-outside">
+                                <input type="radio" id="shipping-outside" name="shipping" value="outside" ${selectedShippingKey === 'outside' ? 'checked' : ''}>
+                                ঢাকার বাহিরে
+                            </label>
+                            <span class="price">${formatPrice(SHIPPING_COSTS.outside)}</span>
+                        </div>
+                    </div>
+                    <div class="summary-line total">
+                        <span>Total Payable</span>
+                        <span class="price">${formatPrice(finalTotal)}</span>
+                    </div>
+                `;
+                
+                // Add event listeners for new shipping options
+                document.querySelectorAll('.shipping-option').forEach(option => {
+                    option.addEventListener('click', () => {
+                        selectedShippingKey = option.dataset.shipping;
+                        renderSummary();
+                    });
+                });
+                
+                validateForm();
+            }
+
+            // Initial render and validation setup
+            renderSummary();
+            requiredInputs.forEach(input => input.addEventListener('input', validateForm));
+
+            // Handle form submission
+            checkoutForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                
+                if (cart.length === 0) {
+                    alert('Your cart is empty. Please add items before placing an order.');
+                    return;
+                }
+
+                const orderSubtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+                const selectedDeliveryCharge = SHIPPING_COSTS[selectedShippingKey];
+
+                const orderDetails = {
+                    customerName: document.getElementById('customerName').value,
+                    customerAddress: document.getElementById('customerAddress').value,
+                    customerPhone: document.getElementById('customerPhone').value,
+                    specialInstructions: document.getElementById('specialInstructions').value || 'Nothing',
+                    paymentMethod: 'Cash on Delivery',
+                    items: cart,
+                    subtotal: orderSubtotal,
+                    deliveryCharge: selectedDeliveryCharge,
+                    orderTotal: orderSubtotal + selectedDeliveryCharge,
+                    orderDate: new Date().toISOString(),
+                    status: 'Pending'
+                };
+
+                const orderSaved = await window.saveOrderToFirestore(orderDetails);
+
+                if (orderSaved) {
+                    localStorage.removeItem('cart');
+                    cart = [];
+                    checkoutSection.style.display = 'none';
+                    confirmationPage.style.display = 'block';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
